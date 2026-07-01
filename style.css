@@ -1,0 +1,417 @@
+/* ==========================================================================
+   GullyTrack AI — Design Tokens
+   Concept: a street-court "viewfinder" — chalk markings on concrete,
+   crossed with a sports-science readout. Camera brackets frame the feed
+   like a motion-capture rig; metric cards carry a literal range gauge
+   instead of just a number, because a biomechanics app should show where
+   a value sits in its safe range, not just what it is.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap');
+
+:root {
+    /* Color: concrete court at dusk, chalk linework, two functional accents */
+    --bg: #1B211D;
+    --bg-elev: #212820;
+    --panel: #262E27;
+    --line: #38443A;
+    --chalk: #ECEDE6;
+    --chalk-dim: #9CA79C;
+    --safe: #45D6B8;
+    --safe-dim: rgba(69, 214, 184, 0.14);
+    --warn: #FF6B45;
+    --warn-dim: rgba(255, 107, 69, 0.14);
+
+    /* Type */
+    --font-display: 'Barlow Condensed', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --radius-lg: 18px;
+    --radius-md: 12px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--chalk);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+button {
+    font-family: inherit;
+}
+
+/* ==========================================================================
+   App shell
+   ========================================================================== */
+
+.app-container {
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 28px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.app-header {
+    text-align: left;
+}
+
+.logo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 34px;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.logo span {
+    color: var(--safe);
+}
+
+.tagline {
+    margin: 6px 0 0;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--chalk-dim);
+}
+
+/* ==========================================================================
+   Video / camera viewfinder
+   ========================================================================== */
+
+.video-window {
+    background: var(--panel);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.video-placeholder {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--radius-md);
+    background: var(--bg-elev);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    padding: 24px;
+    overflow: hidden;
+}
+
+/* Viewfinder corner brackets — built from stacked gradients on one
+   pseudo-element, no extra markup required */
+.video-placeholder::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    pointer-events: none;
+    z-index: 3;
+    background-image:
+        linear-gradient(to right, var(--safe) 18px, transparent 18px),
+        linear-gradient(to bottom, var(--safe) 18px, transparent 18px),
+        linear-gradient(to left, var(--safe) 18px, transparent 18px),
+        linear-gradient(to bottom, var(--safe) 18px, transparent 18px),
+        linear-gradient(to right, var(--safe) 18px, transparent 18px),
+        linear-gradient(to top, var(--safe) 18px, transparent 18px),
+        linear-gradient(to left, var(--safe) 18px, transparent 18px),
+        linear-gradient(to top, var(--safe) 18px, transparent 18px);
+    background-size:
+        22px 3px, 3px 22px,
+        22px 3px, 3px 22px,
+        22px 3px, 3px 22px,
+        22px 3px, 3px 22px;
+    background-position:
+        top left, top left,
+        top right, top right,
+        bottom left, bottom left,
+        bottom right, bottom right;
+    background-repeat: no-repeat;
+    opacity: 0.55;
+    transition: opacity 0.3s ease;
+}
+
+.video-placeholder.is-active::before {
+    opacity: 1;
+}
+
+/* Scanning line, shown only while analysis is running */
+.video-placeholder.is-scanning::after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    top: 20px;
+    background: linear-gradient(90deg, transparent, var(--safe), transparent);
+    box-shadow: 0 0 10px var(--safe);
+    z-index: 4;
+    animation: scan-sweep 2.4s linear infinite;
+}
+
+@keyframes scan-sweep {
+    0% { top: 20px; }
+    50% { top: calc(100% - 20px); }
+    100% { top: 20px; }
+}
+
+.camera-icon {
+    font-size: 34px;
+    opacity: 0.6;
+}
+
+.video-placeholder p {
+    margin: 0;
+    color: var(--chalk-dim);
+    font-size: 13px;
+    max-width: 220px;
+}
+
+.video-placeholder video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.video-placeholder canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.video-placeholder .feed-note {
+    position: relative;
+    z-index: 3;
+    background: rgba(27, 33, 29, 0.72);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--chalk-dim);
+}
+
+.video-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    flex: 1;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 13px 16px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--safe);
+    outline-offset: 2px;
+}
+
+.btn-primary {
+    background: var(--safe);
+    color: #0E211C;
+}
+
+.btn-primary.is-running {
+    background: var(--warn);
+    color: #2A130A;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--chalk);
+    border: 1px solid var(--line);
+}
+
+.btn-secondary:hover {
+    border-color: var(--safe);
+}
+
+/* ==========================================================================
+   Metrics dashboard
+   ========================================================================== */
+
+.metrics-dashboard h2,
+.coaching-panel h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 15px;
+    margin: 0 0 12px;
+    color: var(--chalk-dim);
+}
+
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.metric-card {
+    position: relative;
+    background: var(--panel);
+    border-radius: var(--radius-md);
+    padding: 14px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.metric-card:first-child {
+    grid-column: 1 / -1;
+}
+
+.metric-card.alert-card {
+    border-color: rgba(255, 107, 69, 0.35);
+}
+
+.metric-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--chalk-dim);
+}
+
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.metric-status {
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+}
+
+.status-safe {
+    color: var(--safe);
+    background: var(--safe-dim);
+}
+
+.status-warn {
+    color: var(--warn);
+    background: var(--warn-dim);
+}
+
+/* Range gauge — a literal readout of where the metric sits in its safe
+   range, not a decorative bar. Position is driven by --pos (0 to 1),
+   set from JS. */
+.metric-card::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 12px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--line);
+}
+
+.metric-card::after {
+    content: "";
+    position: absolute;
+    bottom: 9px;
+    left: calc(16px + (100% - 32px) * var(--pos, 0.5));
+    width: 9px;
+    height: 9px;
+    margin-left: -4.5px;
+    border-radius: 50%;
+    background: var(--safe);
+    box-shadow: 0 0 6px var(--safe);
+    transition: left 0.5s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.metric-card.alert-card::after {
+    background: var(--warn);
+    box-shadow: 0 0 6px var(--warn);
+}
+
+/* ==========================================================================
+   Coaching panel
+   ========================================================================== */
+
+.coaching-panel {
+    background: var(--panel);
+    border-left: 3px solid var(--safe);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    transition: border-color 0.3s ease;
+}
+
+.coaching-panel.is-alert {
+    border-left-color: var(--warn);
+}
+
+.insight-text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--chalk);
+    transition: opacity 0.25s ease;
+}
+
+/* ==========================================================================
+   Motion & accessibility
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .video-placeholder.is-scanning::after {
+        animation: none;
+    }
+    .btn,
+    .metric-card::after,
+    .insight-text {
+        transition: none;
+    }
+}
+
+@media (max-width: 360px) {
+    .metric-grid {
+        grid-template-columns: 1fr;
+    }
+    .metric-card:first-child {
+        grid-column: auto;
+    }
+}
