@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GullyTrack AI - Grassroots biomechanical analysis for sports, powered by real-time pose tracking.">
+    <title>GullyTrack AI - Sports Analytics</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+
+    <!-- Main Mobile Container -->
+    <main class="app-container">
+
+        <!-- App Header Section -->
+        <header class="app-header">
+            <h1 class="logo">GullyTrack <span>AI</span></h1>
+            <p class="tagline">Grassroots Biomechanical Analysis</p>
+        </header>
+
+        <!-- Live Camera / Video Feed Area -->
+        <section class="video-window">
+            <div class="video-placeholder" id="video-feed">
+                <div class="camera-icon" aria-hidden="true">📷</div>
+                <p>Camera feed or uploaded video goes here</p>
+                <!-- Simulated tracking points overlay boundary -->
+                <div class="skeleton-overlay-mock" aria-hidden="true"></div>
+            </div>
+
+            <!-- Contextual Controls Layout -->
+            <div class="video-controls">
+                <button type="button" class="btn btn-primary" id="start-btn">Start Analysis</button>
+                <button type="button" class="btn btn-secondary" id="upload-btn">Upload Clip</button>
+            </div>
+        </section>
+
+        <!-- Real-Time Metric Dashboard -->
+        <section class="metrics-dashboard">
+            <h2>Real-Time Metrics</h2>
+
+            <div class="metric-grid" aria-live="polite">
+                <div class="metric-card">
+                    <span class="metric-label">Joint Angle</span>
+                    <span class="metric-value" data-metric="joint-angle">142°</span>
+                    <span class="metric-status status-safe">Optimal</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">Injury Risk</span>
+                    <span class="metric-value" data-metric="injury-risk">Low</span>
+                    <span class="metric-status status-safe">Stable</span>
+                </div>
+                <div class="metric-card alert-card">
+                    <span class="metric-label">Knee Alignment</span>
+                    <span class="metric-value" data-metric="knee-alignment">Deviated</span>
+                    <span class="metric-status status-warn">Fix Posture</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Coaching Insights -->
+        <section class="coaching-panel">
+            <h3>AI Coaching Insight</h3>
+            <p class="insight-text" id="coaching-insight" aria-live="polite">
+                "Your knee extension angle is slightly overextended by 5 degrees during the release phase. Soften your landing leg slightly to protect your ACL joint."
+            </p>
+        </section>
+
+    </main>
+
+</body>
+</html>
